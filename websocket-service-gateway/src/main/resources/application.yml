@@ -1,0 +1,51 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: service-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: true  # 开启从注册中心动态创建路由的功能，利用微服务名进行路由
+
+      routes:
+        - id: websocket_routes  # 路由规则id，自定义，唯一
+          predicates: # 路由断言，判断当前请求是否符合当前规则，符合则路由到目标服务
+            - Path=/websocket-server/**  # 以请求路径作为判断规则
+          uri: lb://websocket-server  # 路由的目标服务, lb代表负载均衡，默认轮询，会从注册中心拉取服务列表
+          filters:
+            - StripPrefix=1  # 请求拦截的个数
+
+      # 全局跨域
+      globalcors:
+        corsConfigurations:  # 跨域配置
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+            allowedMethods:
+              - GET
+              - POST
+              - OPTIONS
+              - DELETE
+              - PUT
+              - HEAD
+              - PATCH
+
+      # 单节点
+#      routes:
+#        - id: websocket
+#          predicates:
+#            - Path=/websocket-server/**
+#          uri: http://localhost:8071  # 服务名称的路由地址
+#          filters:
+#            - StripPrefix=1
+
+#logging:
+#  level:
+#    root: debug
