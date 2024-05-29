@@ -1,0 +1,42 @@
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>websocket View</title>
+<script src="/js/websocket.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/sockjs.min.js"></script>
+<script src="/js/stomp.min.js"></script>
+<script id="code">
+    var DEBUG_FLAG = true;
+    $(function() {
+        // 连接到websocket服务端
+        connect();
+    });
+
+    function sendToUser() {
+      var msg = $("#msg").val();
+      var toUserId = $("#userId").val();
+      var data  = {"fromUserId": userId, "toUserId": toUserId, "msg": msg};
+      stompClient.send("/app/sendToUser", {}, JSON.stringify(data));
+    }
+
+    function sendToAll() {
+      var msg = $("#msg").val();
+      var data  = {"fromUserId": userId, "msg": msg};
+      stompClient.send("/app/sendToAll", {}, JSON.stringify(data));
+    }
+
+</script>
+</head>
+
+<body style="margin: 0px;padding: 0px;overflow: hidden; ">
+  <!-- 显示消息-->
+  <textarea id="debuggerInfo" style="width:100%;height:200px;"></textarea>
+  <!-- 发送消息-->
+  <div>用户：<input type="text" id="userId"></div>
+  <div>消息：<input type="text" id="msg"></div>
+  <div><input type="button" value="发送消息" onclick="sendToUser()"></div>
+  <div><input type="button" value="群发消息" onclick="sendToAll()"></div>
+</body>
+</html>
