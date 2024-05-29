@@ -1,0 +1,12 @@
+server:
+  port: 9001
+spring:
+  application:
+    name: websocket-client
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+  redis:
+    host: localhost
+    port: 6379
